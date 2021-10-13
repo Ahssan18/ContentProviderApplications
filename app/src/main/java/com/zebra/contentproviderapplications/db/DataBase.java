@@ -1,4 +1,4 @@
-package com.zebra.contentproviderapplications;
+package com.zebra.contentproviderapplications.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;

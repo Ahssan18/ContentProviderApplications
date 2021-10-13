@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="20dp"
-    tools:context=".MainActivity">
+    tools:context=".save.MainActivity">
 
     <EditText
         android:id="@+id/et_name"
@@ -31,8 +31,14 @@
         android:id="@+id/btn_save"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-
+        android:layout_marginBottom="20dp"
         android:text="Save"
+        app:layout_constraintBottom_toTopOf="@id/btn_view" />
+    <Button
+        android:id="@+id/btn_view"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="view"
         app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

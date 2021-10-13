@@ -1,6 +1,6 @@
 package com.zebra.contentproviderapplications;
 
-import static com.zebra.contentproviderapplications.DataBase.TABLE_NAME;
+import static com.zebra.contentproviderapplications.db.DataBase.TABLE_NAME;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;
@@ -10,10 +10,13 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.zebra.contentproviderapplications.db.DataBase;
 
 public class Provider extends ContentProvider {
     SQLiteDatabase sqLiteDatabase;
@@ -36,7 +39,15 @@ public class Provider extends ContentProvider {
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
-        return null;
+        SQLiteQueryBuilder qb=new SQLiteQueryBuilder();
+        qb.setTables(TABLE_NAME);
+        Cursor c = qb.query(sqLiteDatabase,	projection,	selection,
+                selectionArgs,null, null, sortOrder);
+        /**
+         * register to watch a content URI for changes
+         */
+        c.setNotificationUri(getContext().getContentResolver(), uri);
+        return c;
     }
 
     @Nullable

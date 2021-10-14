@@ -22,7 +22,7 @@ public class DataBase extends SQLiteOpenHelper {
         db.execSQL("CREATE TABLE "+TABLE_NAME +
                 "(id INTEGER PRIMARY KEY AUTOINCREMENT,"+
                 "name TEXT NOT NULL,"+
-                "age INTEGER NOT NULL);");
+                "age TEXT NOT NULL);");
     }
 
     @Override

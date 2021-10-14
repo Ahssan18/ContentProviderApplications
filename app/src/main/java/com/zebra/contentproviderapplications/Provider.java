@@ -12,6 +12,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,25 +25,29 @@ public class Provider extends ContentProvider {
     static final String URL = "content://" + PROVIDER_NAME + "/students";
     public static final Uri CONTENT_URI = Uri.parse(URL);
     static final int STUDENTS = 1;
+
     @Override
     public boolean onCreate() {
-        Context context=getContext();
-        DataBase db=new DataBase(context);
-        sqLiteDatabase=db.getWritableDatabase();
+        Context context = getContext();
+        DataBase db = new DataBase(context);
+        sqLiteDatabase = db.getWritableDatabase();
         return sqLiteDatabase != null;
     }
+
     static final UriMatcher uriMatcher;
-    static{
+
+    static {
         uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
         uriMatcher.addURI(PROVIDER_NAME, "students", STUDENTS);
     }
+
     @Nullable
     @Override
     public Cursor query(@NonNull Uri uri, @Nullable String[] projection, @Nullable String selection, @Nullable String[] selectionArgs, @Nullable String sortOrder) {
-        SQLiteQueryBuilder qb=new SQLiteQueryBuilder();
+        SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
         qb.setTables(TABLE_NAME);
-        Cursor c = qb.query(sqLiteDatabase,	projection,	selection,
-                selectionArgs,null, null, sortOrder);
+        Cursor c = qb.query(sqLiteDatabase, projection, selection,
+                selectionArgs, null, null, sortOrder);
         /**
          * register to watch a content URI for changes
          */
@@ -59,23 +64,28 @@ public class Provider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
-        long id=sqLiteDatabase.insert(TABLE_NAME,"",values);
-        if(id>0)
-        {
-            Uri uri1= ContentUris.withAppendedId(CONTENT_URI,id);
-            getContext().getContentResolver().notifyChange(uri1,null);
+        long id = sqLiteDatabase.insert(TABLE_NAME, "", values);
+        if (id > 0) {
+            Uri uri1 = ContentUris.withAppendedId(CONTENT_URI, id);
+            getContext().getContentResolver().notifyChange(uri1, null);
             return uri1;
         }
-       throw new SQLException("Failed to add record into "+uri);
+        throw new SQLException("Failed to add record into " + uri);
     }
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return 0;
+        int count = sqLiteDatabase.delete(TABLE_NAME, "id" + "=" + selection,
+                null);
+        getContext().getContentResolver().notifyChange(uri, null);
+        return count;
     }
 
     @Override
     public int update(@NonNull Uri uri, @Nullable ContentValues values, @Nullable String selection, @Nullable String[] selectionArgs) {
-        return 0;
+        Toast.makeText(getContext(), ""+selection, Toast.LENGTH_SHORT).show();
+        int count=sqLiteDatabase.update(TABLE_NAME,values,"id"+"="+selection,null);
+        getContext().getContentResolver().notifyChange(uri, null);
+        return count;
     }
 }
